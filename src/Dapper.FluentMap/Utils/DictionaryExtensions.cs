@@ -6,9 +6,9 @@ namespace Dapper.FluentMap.Utils
     {
         internal static void AddOrUpdate<TKey, TValue>(this IDictionary<TKey, IList<TValue>> dict, TKey key, TValue value)
         {
-            if (dict.ContainsKey(key))
+            if (dict.TryGetValue(key, out var list))
             {
-                dict[key].Add(value);
+                list.Add(value);
             }
             else
             {

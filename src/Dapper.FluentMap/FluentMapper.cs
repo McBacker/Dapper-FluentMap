@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using Dapper.FluentMap.Configuration;
-using Dapper.FluentMap.Conventions;
 using Dapper.FluentMap.Mapping;
-using Dapper.FluentMap.TypeMaps;
 
 namespace Dapper.FluentMap
 {
@@ -13,64 +9,81 @@ namespace Dapper.FluentMap
     /// </summary>
     public static class FluentMapper
     {
-        private static readonly FluentMapConfiguration _configuration = new FluentMapConfiguration();
+        private static IMappingConfiguration _configuration;
 
-        /// <summary>
-        /// Gets the dictionary containing the entity mapping per entity type.
-        /// </summary>
-        public static readonly ConcurrentDictionary<Type, IEntityMap> EntityMaps = new ConcurrentDictionary<Type, IEntityMap>();
-
-        /// <summary>
-        /// Gets the dictionary containing the conventions per entity type.
-        /// </summary>
-        public static readonly ConcurrentDictionary<Type, IList<Convention>> TypeConventions = new ConcurrentDictionary<Type, IList<Convention>>();
+        public static IMappingConfiguration Configuration
+        {
+            get => _configuration ?? throw new InvalidOperationException("FluentMapper is not initialized. Use FluentMapper.Initialize() to configure your mappings.");
+            set => _configuration = value;
+        }
 
         /// <summary>
         /// Initializes Dapper.FluentMap with the specified configuration.
         /// This is method should be called when the application starts or when the first mapping is needed.
         /// </summary>
         /// <param name="configure">A callback containing the configuration of Dapper.FluentMap.</param>
-        public static void Initialize(Action<FluentMapConfiguration> configure)
+        public static void Initialize(Action<IMappingConfiguration> configure)
         {
-            configure(_configuration);
-        }
+            if (configure == null)
+            {
+                throw new ArgumentNullException(nameof(configure));
+            }
 
-        /// <summary>
-        /// Registers a Dapper type map using fluent mapping for the specified <typeparamref name="TEntity"/>.
-        /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        internal static void AddTypeMap<TEntity>()
-        {
-            SqlMapper.SetTypeMap(typeof(TEntity), new FluentMapTypeMap<TEntity>());
+            Configuration = new FluentMappingConfiguration();
+            configure(Configuration);
         }
+    }
 
-        /// <summary>
-        /// Registers a Dapper type map using fluent mapping for the specified <paramref name="entityType"/>.
-        /// </summary>
-        /// <param name="entityType">The type of the entity.</param>
-        internal static void AddTypeMap(Type entityType)
+    public class Startup
+    {
+        public void Start()
         {
-            var instance = (SqlMapper.ITypeMap)Activator.CreateInstance(typeof(FluentMapTypeMap<>).MakeGenericType(entityType));
-            SqlMapper.SetTypeMap(entityType, instance);
+            FluentMapper.Initialize(config =>
+            {
+                config.Entity<TestEntity>(builder =>
+                {
+                    builder.IsCaseSensitive(false);
+                    builder.Map(e => e.Id).ToColumn("autID");
+                    builder.Map(e => e.Name).ToColumn("strName");
+                });
+
+                config.Entity<TestEntity2>(builder =>
+                {
+                    builder.Map(e => e.EntityId).ToColumn("Id");
+                    builder.Map(e => e.Amount).ToColumn("EntityAmount");
+                });
+
+                config.AddMap(new TestEntity3Map());
+            });
         }
+    }
+    public class TestEntity
+    {
+        public int Id { get; set; }
 
-        /// <summary>
-        /// Registers a Dapper type map using conventions for the specified <typeparamref name="TEntity"/>.
-        /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        internal static void AddConventionTypeMap<TEntity>()
-        {
-            SqlMapper.SetTypeMap(typeof(TEntity), new FluentConventionTypeMap<TEntity>());
-        }
+        public string Name { get; set; }
+    }
 
-        /// <summary>
-        /// Registers a Dapper type map using conventions for the specified <paramref name="entityType"/>.
-        /// </summary>
-        /// <param name="entityType">The type of the entity.</param>
-        internal static void AddConventionTypeMap(Type entityType)
+    public class TestEntity2
+    {
+        public Guid EntityId { get; set; }
+
+        public decimal? Amount { get; set; }
+    }
+
+    public class TestEntity3
+    {
+        public int EntityId { get; set; }
+
+        public string Description { get; set; }
+    }
+
+    public class TestEntity3Map : EntityMappingBuilder<TestEntity3>
+    {
+        public TestEntity3Map()
         {
-            var instance = (SqlMapper.ITypeMap)Activator.CreateInstance(typeof(FluentConventionTypeMap<>).MakeGenericType(entityType));
-            SqlMapper.SetTypeMap(entityType, instance);
+            Map(e => e.EntityId).ToColumn("entity_id");
+            Map(e => e.Description).ToColumn("description");
         }
     }
 }
