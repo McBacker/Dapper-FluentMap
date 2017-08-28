@@ -12,6 +12,8 @@ namespace Dapper.FluentMap.Mapping
         private readonly EntityMapping _entityMapping = new EntityMapping();
         private readonly List<IPropertyMappingBuilder> _propertyMappingBuilders = new List<IPropertyMappingBuilder>();
 
+        protected virtual IEntityMapping Mapping => _entityMapping;
+
         public IPropertyMappingBuilder Map(Expression<Func<TEntity, object>> mapping)
         {
             // Resolve property info from expression and guard against duplicate mappings.
@@ -27,13 +29,13 @@ namespace Dapper.FluentMap.Mapping
             return propertyMappingBuilder;
         }
 
-        public void IsCaseSensitive(bool caseSensitive) => _entityMapping.IsCaseSensitive = caseSensitive;
+        public void IsCaseSensitive(bool caseSensitive) => Mapping.IsCaseSensitive = caseSensitive;
 
         public IEntityMapping Build()
         {
             var propertyMaps = _propertyMappingBuilders.Select(b => b.Build()).ToList();
-            _entityMapping.PropertyMappings = propertyMaps;
-            return _entityMapping;
+            Mapping.PropertyMappings = propertyMaps;
+            return Mapping;
         }
     }
 }

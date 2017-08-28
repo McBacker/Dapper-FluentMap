@@ -8,9 +8,9 @@ namespace Dapper.FluentMap.Mapping
     /// </summary>
     public interface IEntityMapping
     {
-        ICollection<IPropertyMapping> PropertyMappings { get; }
+        ICollection<IPropertyMapping> PropertyMappings { get; set; }
 
-        bool IsCaseSensitive { get; }
+        bool IsCaseSensitive { get; set; }
 
         Dictionary<string, PropertyInfo> Compile();
     }
