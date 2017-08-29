@@ -6,6 +6,8 @@ namespace Dapper.FluentMap.Mapping
     {
         PropertyInfo PropertyInfo { get; }
 
+        IPropertyMapping PropertyMapping { get; }
+
         IPropertyMappingBuilder ToColumn(string columnName);
 
         IPropertyMapping Build();

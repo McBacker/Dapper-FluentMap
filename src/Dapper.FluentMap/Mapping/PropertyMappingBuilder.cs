@@ -4,27 +4,24 @@ namespace Dapper.FluentMap.Mapping
 {
     public class PropertyMappingBuilder : IPropertyMappingBuilder
     {
-        private readonly PropertyMapping _propertyMapping;
-
-        protected virtual IPropertyMapping PropertyMapping => _propertyMapping;
-
         public PropertyMappingBuilder(PropertyInfo propertyInfo)
         {
-            _propertyMapping = new PropertyMapping(propertyInfo);
             PropertyInfo = propertyInfo;
+            PropertyMapping = CreatePropertyMapping(propertyInfo);
         }
 
         public PropertyInfo PropertyInfo { get; }
 
+        public IPropertyMapping PropertyMapping { get; }
+
+        protected virtual IPropertyMapping CreatePropertyMapping(PropertyInfo propertyInfo) => new PropertyMapping(propertyInfo);
+
         public IPropertyMappingBuilder ToColumn(string columnName)
         {
-            _propertyMapping.ColumnName = columnName;
+            PropertyMapping.ColumnName = columnName;
             return this;
         }
 
-        public IPropertyMapping Build()
-        {
-            return _propertyMapping;
-        }
+        public IPropertyMapping Build() => PropertyMapping;
     }
 }

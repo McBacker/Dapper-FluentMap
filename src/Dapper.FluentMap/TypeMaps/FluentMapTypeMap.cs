@@ -6,8 +6,6 @@ namespace Dapper.FluentMap.TypeMaps
 {
     public class FluentMapTypeMap<TEntity> : MultiTypeMap
     {
-        private static readonly ConcurrentDictionary<string, PropertyInfo> _cache = new ConcurrentDictionary<string, PropertyInfo>();
-
         public FluentMapTypeMap(Dictionary<string, PropertyInfo> mapping)
             : base(new CustomPropertyTypeMap(typeof(TEntity), (t, c) => GetPropertyInfo(mapping, c)), new DefaultTypeMap(typeof(TEntity)))
         {

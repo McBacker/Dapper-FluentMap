@@ -6,6 +6,6 @@ namespace Dapper.FluentMap.Mapping
     {
         PropertyInfo PropertyInfo { get; }
 
-        string ColumnName { get; }
+        string ColumnName { get; set; }
     }
 }
