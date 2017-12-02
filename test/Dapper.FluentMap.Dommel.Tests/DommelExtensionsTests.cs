@@ -67,4 +67,11 @@ namespace Dapper.FluentMap.Dommel.Tests
                 .IsKey();
         }
     }
+
+    public class TestEntity
+    {
+        public int Id { get; set; }
+
+        public string Description { get; set; }
+    }
 }

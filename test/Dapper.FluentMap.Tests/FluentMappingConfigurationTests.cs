@@ -13,8 +13,8 @@ namespace Dapper.FluentMap.Tests
         {
             // Arrange
             var config = new FluentMappingConfiguration();
-            var builder = new EntityMappingBuilder<TestEntity>();
-            builder.Map(p => p.Id).ToColumn("id");
+            var builder = new EntityMappingBuilder<TestEntity2>();
+            builder.Map(p => p.Id).ToColumn("entity_id");
 
             // Act
             config.AddMap(builder);
@@ -26,13 +26,25 @@ namespace Dapper.FluentMap.Tests
             Assert.Single(mappings);
             var mapping = mappings.Single();
 
+            // Did it add a single property mapping?
+            Assert.Single(mapping.Value.PropertyMappings);
+            var propertyMapping = mapping.Value.PropertyMappings.Single();
+            Assert.Equal("entity_id", propertyMapping.ColumnName);
+            Assert.Equal(typeof(TestEntity2).GetProperty("Id"), propertyMapping.PropertyInfo);
+
             // Did it add our Dapper type map implementation?
-            var typeMap = SqlMapper.GetTypeMap(typeof(TestEntity));
-            Assert.IsType<FluentMapTypeMap<TestEntity>>(typeMap);
+            var typeMap = SqlMapper.GetTypeMap(typeof(TestEntity2));
+            Assert.IsType<FluentMapTypeMap<TestEntity2>>(typeMap);
 
             // Does it correctly maps the mapped column?
-            var idMap = typeMap.GetMember("id");
-            Assert.Equal(typeof(TestEntity).GetProperty("Id"), idMap.Property);
+            var idMap = typeMap.GetMember("entity_id");
+            Assert.NotNull(idMap);
+            Assert.Equal(typeof(TestEntity2).GetProperty("Id"), idMap.Property);
+        }
+
+        private class TestEntity2
+        {
+            public string Id { get; set; }
         }
     }
 }
