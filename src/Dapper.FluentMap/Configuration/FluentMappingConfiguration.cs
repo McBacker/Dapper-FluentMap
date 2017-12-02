@@ -6,6 +6,9 @@ using Dapper.FluentMap.TypeMaps;
 
 namespace Dapper.FluentMap.Configuration
 {
+    /// <summary>
+    /// <see cref="IMappingConfiguration"/> implementation for fluent mapping configuration.
+    /// </summary>
     public class FluentMappingConfiguration : IMappingConfiguration
     {
         private ConcurrentDictionary<Type, IEntityMapping> _entityMappings = new ConcurrentDictionary<Type, IEntityMapping>();

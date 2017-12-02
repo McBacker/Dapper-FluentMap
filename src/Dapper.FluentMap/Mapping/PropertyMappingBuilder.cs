@@ -2,15 +2,18 @@
 
 namespace Dapper.FluentMap.Mapping
 {
+    /// <summary>
+    /// Default <see cref="IPropertyMappingBuilder"/> implementation.
+    /// </summary>
     public class PropertyMappingBuilder : IPropertyMappingBuilder
     {
         public PropertyMappingBuilder(PropertyInfo propertyInfo)
         {
-            PropertyInfo = propertyInfo;
+            Property = propertyInfo;
             PropertyMapping = CreatePropertyMapping(propertyInfo);
         }
 
-        public PropertyInfo PropertyInfo { get; }
+        public PropertyInfo Property { get; }
 
         public IPropertyMapping PropertyMapping { get; }
 

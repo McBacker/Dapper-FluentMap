@@ -28,7 +28,6 @@ namespace Dapper.FluentMap.TypeMaps
                 try
                 {
                     var result = mapper.FindConstructor(names, types);
-
                     if (result != null)
                     {
                         return result;

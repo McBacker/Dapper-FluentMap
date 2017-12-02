@@ -7,6 +7,9 @@ using Dapper.FluentMap.Utils;
 
 namespace Dapper.FluentMap.Mapping
 {
+    /// <summary>
+    /// Default <see cref="IEntityMappingBuilder{TEntity}"/> implementation.
+    /// </summary>
     public class EntityMappingBuilder<TEntity> : IEntityMappingBuilder<TEntity>
     {
         private readonly List<IPropertyMappingBuilder> _propertyMappingBuilders = new List<IPropertyMappingBuilder>();
@@ -26,7 +29,7 @@ namespace Dapper.FluentMap.Mapping
         {
             // Resolve property info from expression and guard against duplicate mappings.
             var propertyInfo = (PropertyInfo)ReflectionHelper.GetMemberInfo(mapping);
-            if (_propertyMappingBuilders.Any(builder => builder.PropertyInfo == propertyInfo))
+            if (_propertyMappingBuilders.Any(builder => builder.Property == propertyInfo))
             {
                 throw new Exception($"Duplicate mapping detected. Property '{propertyInfo.Name}' is already mapped.");
             }
