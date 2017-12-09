@@ -4,7 +4,7 @@ using Dapper.FluentMap.Mapping;
 
 namespace Dapper.FluentMap.Dommel.Mapping
 {
-    public interface IDommelEntityMappingBuilder<TEntity> : IEntityMappingBuilder<TEntity>, IFluentInterface
+    public interface IDommelEntityMappingBuilder<TEntity> : IEntityMappingBuilder<TEntity>
     {
         new IDommelEntityMapping EntityMapping { get; }
 

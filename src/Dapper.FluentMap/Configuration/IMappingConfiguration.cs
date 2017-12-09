@@ -7,7 +7,7 @@ namespace Dapper.FluentMap.Configuration
     /// <summary>
     /// Contains the configuration for Dapper.FluentMap.
     /// </summary>
-    public interface IMappingConfiguration : IFluentInterface
+    public interface IMappingConfiguration
     {
         /// <summary>
         /// Gets a collection of entity mappings.

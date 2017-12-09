@@ -7,7 +7,7 @@ namespace Dapper.FluentMap.Mapping
     /// Provider a builder to create <see cref="IEntityMapping"/> instances for <typeparamref name="TEntity"/>.
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    public interface IEntityMappingBuilder<TEntity> : IFluentInterface
+    public interface IEntityMappingBuilder<TEntity>
     {
         /// <summary>
         /// Gets a reference to the <see cref="IEntityMapping"/> being built.
